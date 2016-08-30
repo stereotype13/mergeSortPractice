@@ -1,6 +1,9 @@
 #include <iostream>
 #include <limits>
 #include <vector>
+#include <random>
+#include <ctime>
+#include <chrono>
 
 using namespace std;
 
@@ -88,16 +91,35 @@ int binarySearch( int searchTerm, const vector<int>& vec ) {
 int main(int argc, char const *argv[])
 {
 	
-	//test mergeSort
-	vector<int> unsorted = {7, 1, 5, 8, 9, 2, 5, 3, 7, 14, 56, 1, 8};
-	vector<int> sorted(unsorted.size());
-	mergeSort(unsorted, sorted);
-	for (const auto& x : sorted) {
-		cout << x << ", ";
-	}
-	cout << endl;
 
-	int searchTerm = 7;
-	cout << searchTerm << " was found at index " << binarySearch(searchTerm, sorted) << endl;
+	const int n = 10000;
+	default_random_engine generator;
+	uniform_int_distribution<int> distribution(1, n);
+	vector<int> unsorted;
+	
+
+	//fill unsorted with random integers
+	for (int i = 0; i < n - 1; ++i) {
+		unsorted.push_back( distribution(generator) );
+	}
+
+	vector<int> sorted( unsorted.size() );
+
+
+	chrono::time_point<std::chrono::system_clock> start, end;
+	cout << "Sorting..." << endl;
+
+	start = chrono::system_clock::now();
+	mergeSort( unsorted, sorted );
+	end = chrono::system_clock::now();
+
+	chrono::duration<double> elapsedTimeInSeconds = end - start;
+
+	cout << "Elapsed time: " << elapsedTimeInSeconds.count() << "s\n";
+
+
+	cout << "7862 was found at position " << binarySearch( 7862, sorted ) << "." << endl;
+	
+	
 	return 0;
 }
